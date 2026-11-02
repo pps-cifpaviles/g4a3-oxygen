@@ -231,6 +231,7 @@ Oxygen es un proyecto de aprendizaje y **no está preparado para producción tal
 
 Irene Cid
 Guillermo sobrino (guillermosobrino01)
+https://github.com/guillermosobrino01
 
 ## Licencia y uso
 
