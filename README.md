@@ -19,11 +19,11 @@ flowchart LR
     A -->|mongoose| M[("mongo<br/>MongoDB 7")]
 ```
 
-| Componente | Carpeta | Tecnología | Puerto |
-| --- | --- | --- | --- |
-| Frontend | `Oxygen8/` | React 18 (Create React App), React Bootstrap, axios | 3000 |
-| API | `Oxygen8Service/` | Node.js 22, Express 5, mongoose, JWT, bcrypt | 8000 |
-| Base de datos | — | MongoDB 7 | 27017 (solo red interna) |
+| Componente    | Carpeta           | Tecnología                                          | Puerto                   |
+| ------------- | ----------------- | --------------------------------------------------- | ------------------------ |
+| Frontend      | `Oxygen8/`        | React 18 (Create React App), React Bootstrap, axios | 3000                     |
+| API           | `Oxygen8Service/` | Node.js 22, Express 5, mongoose, JWT, bcrypt        | 8000                     |
+| Base de datos | —                 | MongoDB 7                                           | 27017 (solo red interna) |
 
 El navegador habla con la API directamente. Por eso la URL de la API (`REACT_APP_API_ENDPOINT`) tiene que ser una dirección que el **navegador** pueda alcanzar, y se incrusta en el JavaScript al compilar el frontend.
 
@@ -68,13 +68,13 @@ Todas las variables se definen en un fichero `.env` en la raíz. Parte de `.env.
 cp .env.example .env
 ```
 
-| Variable | Usada por | Para qué sirve | Ejemplo |
-| --- | --- | --- | --- |
-| `MONGODB_USER` / `MONGODB_PASS` | mongo, api | Usuario administrador de MongoDB | `oxygen` / *(una contraseña larga)* |
-| `JWT_SECRET_KEY` | api | Firma de los tokens de sesión | salida de `openssl rand -hex 32` |
-| `JWT_EXPIRE_TIME` | api | Caducidad del token | `1h` |
-| `REACT_APP_API_ENDPOINT` | web (al compilar) | URL de la API vista desde el navegador | `http://localhost:8000/api` |
-| `WEB_PORT` / `API_PORT` | compose | Puertos publicados en tu máquina | `3000` / `8000` |
+| Variable                        | Usada por         | Para qué sirve                         | Ejemplo                             |
+| ------------------------------- | ----------------- | -------------------------------------- | ----------------------------------- |
+| `MONGODB_USER` / `MONGODB_PASS` | mongo, api        | Usuario administrador de MongoDB       | `oxygen` / _(una contraseña larga)_ |
+| `JWT_SECRET_KEY`                | api               | Firma de los tokens de sesión          | salida de `openssl rand -hex 32`    |
+| `JWT_EXPIRE_TIME`               | api               | Caducidad del token                    | `1h`                                |
+| `REACT_APP_API_ENDPOINT`        | web (al compilar) | URL de la API vista desde el navegador | `http://localhost:8000/api`         |
+| `WEB_PORT` / `API_PORT`         | compose           | Puertos publicados en tu máquina       | `3000` / `8000`                     |
 
 `compose.yaml` fija además `MONGODB_URI=mongodb://mongo:27017/oxygen` y `MONGODB_AUTHSRC=admin` para la API.
 
@@ -108,13 +108,13 @@ curl -X POST http://localhost:8000/api/users/addUser \
 
 ### Comandos útiles
 
-| Acción | Comando |
-| --- | --- |
-| Ver los logs de la API | `docker compose logs -f api` |
-| Reconstruir tras cambiar código | `docker compose up -d --build` |
-| Parar sin borrar datos | `docker compose down` |
-| Parar y **borrar la base de datos** | `docker compose down -v` |
-| Abrir una consola de MongoDB | `docker compose exec mongo mongosh -u "$MONGODB_USER" -p --authenticationDatabase admin oxygen` |
+| Acción                              | Comando                                                                                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Ver los logs de la API              | `docker compose logs -f api`                                                                    |
+| Reconstruir tras cambiar código     | `docker compose up -d --build`                                                                  |
+| Parar sin borrar datos              | `docker compose down`                                                                           |
+| Parar y **borrar la base de datos** | `docker compose down -v`                                                                        |
+| Abrir una consola de MongoDB        | `docker compose exec mongo mongosh -u "$MONGODB_USER" -p --authenticationDatabase admin oxygen` |
 
 ### Desplegar en otra máquina
 
@@ -172,12 +172,12 @@ REACT_APP_API_ENDPOINT=http://localhost:8000/api npm start    # abre http://loca
 
 `.github/workflows/pipeline.yml` es el punto de partida que irás ampliando en el curso.
 
-| Evento | Jobs | Dónde se ejecuta |
-| --- | --- | --- |
-| Pull request a `develop`, `main` o `release/**` | `build-web`, `build-api` | Runners de GitHub |
-| Push a `develop` | Build + `deploy-dev` | Runner `pps-dev` · entorno `desarrollo` |
-| Push a `release/**` | Build + `deploy-pre` | Runner `pps-pre` · entorno `preproduccion` |
-| Tag `v*` | Build + `deploy-pro` (con aprobación) | Runner `pps-pro` · entorno `produccion` |
+| Evento                                          | Jobs                                  | Dónde se ejecuta                           |
+| ----------------------------------------------- | ------------------------------------- | ------------------------------------------ |
+| Pull request a `develop`, `main` o `release/**` | `build-web`, `build-api`              | Runners de GitHub                          |
+| Push a `develop`                                | Build + `deploy-dev`                  | Runner `pps-dev` · entorno `desarrollo`    |
+| Push a `release/**`                             | Build + `deploy-pre`                  | Runner `pps-pre` · entorno `preproduccion` |
+| Tag `v*`                                        | Build + `deploy-pro` (con aprobación) | Runner `pps-pro` · entorno `produccion`    |
 
 El despliegue (`deploy/deploy.sh` + `deploy/compose.yml`) publica la web en el puerto `20000 + NN×100 + 10` y la API en el `+11`. Por ejemplo, el alumno 07 usa los puertos 20710 y 20711. Antes del primer despliegue, crea en cada entorno los dos secretos que necesita:
 
@@ -192,18 +192,18 @@ done
 
 Todas las rutas cuelgan de `/api`. Solo las marcadas con 🔒 exigen la cabecera `Authorization: Bearer <token>` y el rol indicado; el resto son públicas.
 
-| Método | Ruta | Descripción |
-| --- | --- | --- |
-| POST | `/users/addUser` | Crea un usuario |
-| GET | `/users/:userId` | 🔒 admin · Datos de un usuario |
-| POST | `/users/deleteUser` | 🔒 admin · Borra un usuario |
-| POST | `/auth/login` | Devuelve el usuario y un token JWT |
-| POST | `/auth/logout` | Cierra la sesión |
-| GET | `/transportTypes/getAll` | Tipos de transporte y su factor |
-| GET | `/activities/getAll/:userId` | Actividades de un usuario |
-| GET | `/activities/getActivity/:activityId` | Una actividad |
-| POST | `/activities/addActivity/:userId` | Crea una actividad |
-| DELETE | `/activities/deleteActivity/userId/:userId/activityId/:activityId` | Borra una actividad |
+| Método | Ruta                                                               | Descripción                        |
+| ------ | ------------------------------------------------------------------ | ---------------------------------- |
+| POST   | `/users/addUser`                                                   | Crea un usuario                    |
+| GET    | `/users/:userId`                                                   | 🔒 admin · Datos de un usuario     |
+| POST   | `/users/deleteUser`                                                | 🔒 admin · Borra un usuario        |
+| POST   | `/auth/login`                                                      | Devuelve el usuario y un token JWT |
+| POST   | `/auth/logout`                                                     | Cierra la sesión                   |
+| GET    | `/transportTypes/getAll`                                           | Tipos de transporte y su factor    |
+| GET    | `/activities/getAll/:userId`                                       | Actividades de un usuario          |
+| GET    | `/activities/getActivity/:activityId`                              | Una actividad                      |
+| POST   | `/activities/addActivity/:userId`                                  | Crea una actividad                 |
+| DELETE | `/activities/deleteActivity/userId/:userId/activityId/:activityId` | Borra una actividad                |
 
 ## Tests
 
@@ -212,7 +212,7 @@ cd Oxygen8
 CI=true npm test
 ```
 
-> **Estado actual:** los tests del frontend no pasan. `App.test.js`, `Login.test.js` y `AddUser.test.js` renderizan los componentes sin sus *providers* de contexto, `axios-mock-adapter` no está en las dependencias y react-router 7 necesita `TextEncoder` en Jest. Arreglarlos es un buen primer ejercicio antes de añadirlos al pipeline de CI.
+> **Estado actual:** los tests del frontend no pasan. `App.test.js`, `Login.test.js` y `AddUser.test.js` renderizan los componentes sin sus _providers_ de contexto, `axios-mock-adapter` no está en las dependencias y react-router 7 necesita `TextEncoder` en Jest. Arreglarlos es un buen primer ejercicio antes de añadirlos al pipeline de CI.
 
 La API no tiene tests todavía; `jest`, `supertest` y `mongodb-memory-server` ya están en sus dependencias para escribirlos.
 
@@ -229,8 +229,8 @@ Oxygen es un proyecto de aprendizaje y **no está preparado para producción tal
 
 ## Colaboradores
 
-<!-- Añade aquí tu nombre y tu usuario de GitHub (práctica de GitHub, Parte 2). -->
 Irene Cid
+Guillermo sobrino (guillermosobrino01)
 
 ## Licencia y uso
 
