@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const ApiError = require("./apiError");
 const UserModel = require("../models/UserModel");
 
-class UserAuth{
+class UserAuth {
   //  1) check if token exists, if exists get it
   getToken(authorizationHeader) {
     let token;
@@ -13,7 +13,7 @@ class UserAuth{
     if (!token) {
       throw new ApiError(
         "you are not login, Please login to get access this route",
-        401
+        401,
       );
     }
     return token;
@@ -31,7 +31,7 @@ class UserAuth{
     if (!currentUser) {
       throw new ApiError(
         "The user that belong to this token does no longer exist",
-        401
+        401,
       );
     }
     return currentUser;
@@ -41,11 +41,11 @@ class UserAuth{
     if (!currentUser.active) {
       throw new ApiError(
         "The user that belong to this token not active, please activate your account",
-        401
+        401,
       );
     }
     return true;
   }
+}
 
-  
 module.exports = UserAuth;
